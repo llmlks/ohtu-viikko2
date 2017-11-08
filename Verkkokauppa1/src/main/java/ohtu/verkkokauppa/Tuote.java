@@ -14,6 +14,11 @@ public class Tuote {
 
     @Override
     public boolean equals(Object o) {
+
+        if (o.getClass() != Tuote.class) {
+            return false;
+        }
+
         Tuote t = (Tuote)o;
         
         return id==t.id;

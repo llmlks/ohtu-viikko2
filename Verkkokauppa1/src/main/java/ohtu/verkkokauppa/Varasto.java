@@ -3,12 +3,12 @@ package ohtu.verkkokauppa;
 import java.util.*;
 
 public class Varasto implements AbstractVarasto {
-    private AbstractKirjanpito kirjanpito;
-    private HashMap<Tuote, Integer> saldot;  
+    private final AbstractKirjanpito kirjanpito;
+    private final HashMap<Tuote, Integer> saldot;  
     
     public Varasto(AbstractKirjanpito kirjanpito) {
         this.kirjanpito = kirjanpito;
-        saldot = new HashMap<Tuote, Integer>();
+        saldot = new HashMap<>();
         alustaTuotteet();
     }
             

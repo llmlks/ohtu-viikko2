@@ -4,10 +4,10 @@ package ohtu.verkkokauppa;
 import java.util.ArrayList;
 
 public class Kirjanpito implements AbstractKirjanpito {    
-    private ArrayList<String> tapahtumat;
+    private final ArrayList<String> tapahtumat;
 
     public Kirjanpito() {
-        tapahtumat = new ArrayList<String>();
+        tapahtumat = new ArrayList<>();
     }
     
     @Override

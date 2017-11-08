@@ -1,7 +1,7 @@
 package ohtu.verkkokauppa;
 
 public class Pankki implements AbstractPankki {
-    private AbstractKirjanpito kirjanpito;
+    private final AbstractKirjanpito kirjanpito;
 
     public Pankki(AbstractKirjanpito kirjanpito) {
         this.kirjanpito = kirjanpito;

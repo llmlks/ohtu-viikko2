@@ -7,7 +7,7 @@ public class Ostoskori {
     ArrayList<Tuote> tuotteet;
 
     public Ostoskori() {
-        tuotteet = new ArrayList<Tuote>();
+        tuotteet = new ArrayList<>();
     }
 
     public void lisaa(Tuote t) {
