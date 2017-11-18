@@ -1,9 +1,13 @@
 package ohtu;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import java.io.IOException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.fluent.Request;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.util.Map;
 
 public class Main {
 
@@ -11,6 +15,20 @@ public class Main {
         String studentNr = "";
         if (args.length > 0) {
             studentNr = args[0];
+        }
+
+        String statsURL = "https://studies.cs.helsinki.fi/ohtustats/stats";
+        String courseStats = Request.Get(statsURL).execute().returnContent().asString();
+
+        JsonParser parser = new JsonParser();
+        JsonObject parsedStats = parser.parse(courseStats).getAsJsonObject();
+        int subsTotal = 0;
+        int submittedExercises = 0;
+
+        for (Map.Entry<String, JsonElement> member : parsedStats.entrySet()) {
+            JsonObject parsedWeekStats = ((JsonObject) member.getValue());
+            subsTotal += parsedWeekStats.get("students").getAsInt();
+            submittedExercises += parsedWeekStats.get("exercise_total").getAsInt();
         }
 
         String courseURL = "https://studies.cs.helsinki.fi/ohtustats/courseinfo";
@@ -46,5 +64,9 @@ public class Main {
         } catch (HttpResponseException e) {
             System.out.println("Annettua opiskelijanumeroa ei löytynyt järjestelmästä");
         }
+        
+        System.out.println("\nkurssilla yhteensä " + subsTotal
+                + " palautusta, palautettuja tehtäviä " + submittedExercises
+                + " kpl");
     }
 }
