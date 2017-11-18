@@ -30,11 +30,11 @@ public class Submission {
         this.week = week;
     }
 
-    private String weekToString() {
-        return "viikko " + week + ": ";
+    public String weekToString() {
+        return "viikko " + week + ":";
     }
 
-    private String exercisesToString() {
+    public String exercisesToString() {
         String result = "tehdyt tehtävät:";
         for (int exercise : exercises) {
             result += " " + exercise;
@@ -42,12 +42,12 @@ public class Submission {
         return result;
     }
 
-    private String hoursToString() {
-        return "aikaa kului " + hours + " tuntia, ";
+    public String hoursToString() {
+        return "aikaa kului " + hours + " tuntia";
     }
 
-    private String exerciseAmountToString() {
-        return "tehtyjä tehtäviä yhteensä: " + exercises.length + ", ";
+    public String exerciseAmountToString() {
+        return "tehtyjä tehtäviä yhteensä: " + exercises.length;
     }
 
     @Override
