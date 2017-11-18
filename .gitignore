@@ -1,1 +1,4 @@
 /Verkkokauppa1/build/
+build/
+.nb*
+.gradle*
