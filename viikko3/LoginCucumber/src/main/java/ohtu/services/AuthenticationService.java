@@ -4,6 +4,7 @@ import ohtu.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import ohtu.data_access.UserDao;
+import org.springframework.util.StringUtils;
 
 public class AuthenticationService {
 
@@ -25,10 +26,6 @@ public class AuthenticationService {
     }
 
     public boolean createUser(String username, String password) {
-        if (userDao.findByName(username) != null) {
-            return false;
-        }
-
         if (invalid(username, password)) {
             return false;
         }
@@ -39,8 +36,17 @@ public class AuthenticationService {
     }
 
     private boolean invalid(String username, String password) {
-        // validity check of username and password
+        boolean wrongForm = !hasRightForm(username, false)
+                || !hasRightForm(password, true);
 
-        return false;
+        return wrongForm || userDao.findByName(username) != null;
+    }
+
+    private boolean hasRightForm(String string, boolean password) {
+        if (password) {
+            return string.length() >= 8 && !string.matches("[a-zA-Z]+");
+        }
+
+        return string.length() >= 3 && string.matches("[a-z]+");
     }
 }
