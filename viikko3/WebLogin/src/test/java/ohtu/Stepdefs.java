@@ -32,9 +32,19 @@ public class Stepdefs {
 
     @Given("^command new user is selected$")
     public void new_user_selected() throws Throwable {
-        driver.get(baseUrl);
-        WebElement element = driver.findElement(By.linkText("register new user"));
-        element.click();
+        goToRegistrationPage();
+    }
+
+    @Given("^user with username \"([^\"]*)\" and password \"([^\"]*)\" is successfully created$")
+    public void user_is_successfully_created(String username, String password) throws Throwable {
+        goToRegistrationPage();
+        createNewAccountWith(username, password, password);
+    }
+
+    @Given("^user with username \"([^\"]*)\" and password \"([^\"]*)\" is tried to be created$")
+    public void user_is_not_tried_to_be_created_unsuccessfully(String username, String password) throws Throwable {
+        goToRegistrationPage();
+        createNewAccountWith(username, password, password);
     }
 
     @When("^correct username \"([^\"]*)\" and password \"([^\"]*)\" are given$")
@@ -132,5 +142,11 @@ public class Stepdefs {
         element.sendKeys(confirmation);
         element = driver.findElement(By.name("signup"));
         element.submit();
+    }
+
+    private void goToRegistrationPage() {
+        driver.get(baseUrl);
+        WebElement element = driver.findElement(By.linkText("register new user"));
+        element.click();
     }
 }
