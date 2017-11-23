@@ -25,6 +25,9 @@ public class KauppaTest {
     private static final int LEIPA_SALDO = 2;
 
     private static final int VIITE1 = 123;
+    private static final int VIITE2 = 234;
+    private static final int VIITE3 = 345;
+    private static final int VIITE4 = 456;
     private static final String KAUPAN_TILI = "33333-44455";
     private static final String NIMI = "pekka";
     private static final String TILI = "123456";
@@ -56,7 +59,8 @@ public class KauppaTest {
         kauppa.lisaaKoriin(MAITO_ID);
         kauppa.tilimaksu(NIMI, TILI);
 
-        verify(pankki).tilisiirto(NIMI, VIITE1, TILI, KAUPAN_TILI, MAITO_HINTA);
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
     }
 
     @Test
@@ -69,8 +73,8 @@ public class KauppaTest {
         kauppa.lisaaKoriin(LEIPA_ID);
         kauppa.tilimaksu(NIMI, TILI);
 
-        verify(pankki).tilisiirto(NIMI, VIITE1, TILI, KAUPAN_TILI,
-                MAITO_HINTA + LEIPA_HINTA);
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA + LEIPA_HINTA));
     }
 
     @Test
@@ -82,8 +86,8 @@ public class KauppaTest {
         kauppa.lisaaKoriin(MAITO_ID);
         kauppa.tilimaksu(NIMI, TILI);
 
-        verify(pankki).tilisiirto(NIMI, VIITE1, TILI, KAUPAN_TILI,
-                2 * MAITO_HINTA);
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(2 * MAITO_HINTA));
     }
 
     @Test
@@ -96,6 +100,75 @@ public class KauppaTest {
         kauppa.lisaaKoriin(LEIPA_ID);
         kauppa.tilimaksu(NIMI, TILI);
 
-        verify(pankki).tilisiirto(NIMI, VIITE1, TILI, KAUPAN_TILI, MAITO_HINTA);
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
+    }
+
+    @Test
+    public void aloitaAsiointiNollaaOstokset() {
+        when(viitteet.uusi()).thenReturn(VIITE1);
+        when(varasto.saldo(LEIPA_ID)).thenReturn(LEIPA_SALDO);
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.lisaaKoriin(MAITO_ID);
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(LEIPA_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(LEIPA_HINTA));
+    }
+
+    @Test
+    public void jokaiselleMaksutapahtumalleUusiViite() {
+        when(viitteet.uusi())
+                .thenReturn(VIITE1)
+                .thenReturn(VIITE2)
+                .thenReturn(VIITE3)
+                .thenReturn(VIITE4);
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE2), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE3), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE4), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
+    }
+
+    @Test
+    public void tuotteenPoistoVahentaaTilisiirronSummaa() {
+        when(viitteet.uusi()).thenReturn(VIITE1);
+
+        kauppa.aloitaAsiointi();
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.lisaaKoriin(MAITO_ID);
+        kauppa.poistaKorista(MAITO_ID);
+        kauppa.tilimaksu(NIMI, TILI);
+
+        verify(pankki).tilisiirto(eq(NIMI), eq(VIITE1), eq(TILI),
+                eq(KAUPAN_TILI), eq(MAITO_HINTA));
     }
 }
