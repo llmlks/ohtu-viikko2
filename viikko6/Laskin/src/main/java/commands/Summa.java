@@ -29,6 +29,14 @@ public class Summa implements Komento {
 
     @Override
     public void peru() {
+        sovellus.miinus(arvo);
+
+        arvo = 0;
+
+        int tulos = sovellus.tulos();
+
+        syotekentta.setText("");
+        tuloskentta.setText("" + tulos);
     }
 
 }

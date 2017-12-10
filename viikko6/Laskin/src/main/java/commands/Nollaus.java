@@ -8,6 +8,7 @@ public class Nollaus implements Komento {
     private final Sovelluslogiikka sovellus;
     private final JTextField tuloskentta;
     private final JTextField syotekentta;
+    private int arvoEnnen;
 
     public Nollaus(Sovelluslogiikka sovellus, JTextField tuloskentta, JTextField syotekentta) {
         this.sovellus = sovellus;
@@ -17,17 +18,22 @@ public class Nollaus implements Komento {
 
     @Override
     public void suorita() {
+        arvoEnnen = sovellus.tulos();
+
         sovellus.nollaa();
 
-        int tulos = sovellus.tulos();
-
         syotekentta.setText("");
-        tuloskentta.setText("" + tulos);
+        tuloskentta.setText("0");
     }
 
     @Override
     public void peru() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        sovellus.plus(arvoEnnen);
+
+        arvoEnnen = 0;
+
+        syotekentta.setText("");
+        tuloskentta.setText("" + sovellus.tulos());
     }
 
 }

@@ -29,7 +29,14 @@ public class Erotus implements Komento {
 
     @Override
     public void peru() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        sovellus.plus(arvo);
+
+        arvo = 0;
+
+        int tulos = sovellus.tulos();
+
+        syotekentta.setText("");
+        tuloskentta.setText("" + tulos);
     }
-    
+
 }
